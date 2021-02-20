@@ -25,6 +25,24 @@ namespace EmployeeAPI.Controllers.V1
             return Ok(_employeeService.GetEmployees());
         }
 
+        [HttpPut(ApiRoutes.Employees.Update)]
+        public IActionResult Update([FromRoute] int employeeId, [FromBody] UpdateEmployeeRequest request)
+        {
+            var employee = new Employee
+            {
+                FirstName = request.FirstName
+            };
+
+            var updated = _employeeService.UpdateEmployee(employee);
+
+            if (updated)
+            {
+                return Ok(employee);
+            }
+
+            return NotFound();
+        }
+
         [HttpGet(ApiRoutes.Employees.Get)]
         public IActionResult Get([FromRoute] int employeeId )
         {

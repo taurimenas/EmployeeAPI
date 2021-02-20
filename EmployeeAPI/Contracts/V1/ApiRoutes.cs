@@ -14,6 +14,8 @@ namespace EmployeeAPI.Contracts.V1
         public static class Employees
         {
             public const string GetAll = Base + "/employees";
+            public const string Update = Base + "/employees/{employeeId}";
+            public const string Delete = Base + "/employees/{employeeId}";
             public const string Get = Base + "/employees/{employeeId}";
             public const string Create = Base + "/employees";
         }

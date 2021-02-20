@@ -11,5 +11,7 @@ namespace EmployeeAPI.Services
         List<Employee> GetEmployees();
 
         Employee GetEmployeeById(int employeeId);
+
+        bool UpdateEmployee(Employee employeeToUpdate);
     }
 }
