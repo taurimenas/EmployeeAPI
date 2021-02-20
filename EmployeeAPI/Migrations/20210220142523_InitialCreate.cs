@@ -8,7 +8,7 @@ namespace EmployeeAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Blogs",
+                name: "Employees",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "INTEGER", nullable: false)
@@ -24,25 +24,25 @@ namespace EmployeeAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Blogs", x => x.Id);
+                    table.PrimaryKey("PK_Employees", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Blogs_Blogs_BossId",
+                        name: "FK_Employees_Employees_BossId",
                         column: x => x.BossId,
-                        principalTable: "Blogs",
+                        principalTable: "Employees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Blogs_BossId",
-                table: "Blogs",
+                name: "IX_Employees_BossId",
+                table: "Employees",
                 column: "BossId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Blogs");
+                name: "Employees");
         }
     }
 }

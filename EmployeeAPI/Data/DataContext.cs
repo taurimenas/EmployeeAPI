@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using EmployeeAPI.Domain;
 
-namespace EmployeeAPI.Entities
+namespace EmployeeAPI.Data
 {
-    public class EmployeeContext : DbContext
+    public class DataContext : DbContext
     {
-        public DbSet<Employee> Blogs { get; set; }
+        public DbSet<Employee> Employees { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlite("Data Source=employee.db"); //TODO: Hide connection string
