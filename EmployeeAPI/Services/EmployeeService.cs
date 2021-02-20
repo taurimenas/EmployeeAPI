@@ -21,7 +21,7 @@ namespace EmployeeAPI.Services
 
         public Employee GetEmployeeById(int employeeId)
         {
-            return _employees.SingleOrDefault(x => x.Id == employeeId);
+            return _employees.SingleOrDefault(x => x.Id == employeeId); //Throws error if more than one id is the same
         }
 
         public List<Employee> GetEmployees()
@@ -40,6 +40,19 @@ namespace EmployeeAPI.Services
 
             var index = _employees.FindIndex(x => x.Id == employeeToUpdate.Id);
             _employees[index] = employeeToUpdate;
+            return true;
+        }
+
+        public bool DeleteEmployee(int employeeId)
+        {
+            var employee = GetEmployeeById(employeeId);
+
+            if (employee is null)
+            {
+                return false;
+            }
+
+            _employees.Remove(employee);
             return true;
         }
     }

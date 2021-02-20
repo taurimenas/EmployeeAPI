@@ -30,6 +30,7 @@ namespace EmployeeAPI.Controllers.V1
         {
             var employee = new Employee
             {
+                Id = employeeId,
                 FirstName = request.FirstName
             };
 
@@ -43,8 +44,20 @@ namespace EmployeeAPI.Controllers.V1
             return NotFound();
         }
 
+        [HttpDelete(ApiRoutes.Employees.Delete)]
+        public IActionResult Delete([FromRoute] int employeeId)
+        {
+            var deleted = _employeeService.DeleteEmployee(employeeId);
+
+            if (deleted)
+            {
+                return NoContent();
+            }
+            return NotFound();
+        }
+
         [HttpGet(ApiRoutes.Employees.Get)]
-        public IActionResult Get([FromRoute] int employeeId )
+        public IActionResult Get([FromRoute] int employeeId)
         {
             var employee = _employeeService.GetEmployeeById(employeeId);
 

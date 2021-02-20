@@ -13,5 +13,6 @@ namespace EmployeeAPI.Services
         Employee GetEmployeeById(int employeeId);
 
         bool UpdateEmployee(Employee employeeToUpdate);
+        bool DeleteEmployee(int employeeId);
     }
 }
