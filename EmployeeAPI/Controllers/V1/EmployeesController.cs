@@ -20,13 +20,13 @@ namespace EmployeeAPI.Controllers.V1
         }
 
         [HttpGet(ApiRoutes.Employees.GetAll)]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(_employeeService.GetEmployees());
+            return Ok(await _employeeService.GetEmployeesAsync());
         }
 
         [HttpPut(ApiRoutes.Employees.Update)]
-        public IActionResult Update([FromRoute] int employeeId, [FromBody] UpdateEmployeeRequest request)
+        public async Task<IActionResult> Update([FromRoute] int employeeId, [FromBody] UpdateEmployeeRequest request)
         {
             var employee = new Employee
             {
@@ -34,7 +34,7 @@ namespace EmployeeAPI.Controllers.V1
                 FirstName = request.FirstName
             };
 
-            var updated = _employeeService.UpdateEmployee(employee);
+            var updated = await _employeeService.UpdateEmployeeAsync(employee);
 
             if (updated)
             {
@@ -45,9 +45,9 @@ namespace EmployeeAPI.Controllers.V1
         }
 
         [HttpDelete(ApiRoutes.Employees.Delete)]
-        public IActionResult Delete([FromRoute] int employeeId)
+        public async Task<IActionResult> Delete([FromRoute] int employeeId)
         {
-            var deleted = _employeeService.DeleteEmployee(employeeId);
+            var deleted = await _employeeService.DeleteEmployeeAsync(employeeId);
 
             if (deleted)
             {
@@ -57,9 +57,9 @@ namespace EmployeeAPI.Controllers.V1
         }
 
         [HttpGet(ApiRoutes.Employees.Get)]
-        public IActionResult Get([FromRoute] int employeeId)
+        public async Task<IActionResult> Get([FromRoute] int employeeId)
         {
-            var employee = _employeeService.GetEmployeeById(employeeId);
+            var employee = await _employeeService.GetEmployeeByIdAsync(employeeId);
 
             if (employee is null)
             {
@@ -70,11 +70,11 @@ namespace EmployeeAPI.Controllers.V1
         }
 
         [HttpPost(ApiRoutes.Employees.Create)]
-        public IActionResult Create([FromBody] CreateEmployeeRequest employeeRequest)
+        public async Task<IActionResult> Create([FromBody] CreateEmployeeRequest employeeRequest)
         {
             var employee = new Employee { FirstName = employeeRequest.FirstName };
 
-            _employeeService.GetEmployees().Add(employee);
+            await _employeeService.CreateEmployeeAsync(employee);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Employees.Get.Replace("{employeeId}", employee.Id.ToString());

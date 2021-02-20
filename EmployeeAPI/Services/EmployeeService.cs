@@ -1,59 +1,53 @@
-﻿using EmployeeAPI.Domain;
+﻿using EmployeeAPI.Data;
+using EmployeeAPI.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace EmployeeAPI.Services
 {
     public class EmployeeService : IEmployeeService
     {
-        private readonly List<Employee> _employees;
+        private readonly DataContext _dataContext;
 
-        public EmployeeService()
+        public EmployeeService(DataContext dataContext)
         {
-            _employees = new List<Employee>();
-            for (int i = 0; i < 5; i++)
-            {
-                _employees.Add(new Employee { Id = i, FirstName = new Random().NextDouble().ToString() });
-            }
+            _dataContext = dataContext;
         }
 
-        public Employee GetEmployeeById(int employeeId)
+        public async Task<List<Employee>> GetEmployeesAsync()
         {
-            return _employees.SingleOrDefault(x => x.Id == employeeId); //Throws error if more than one id is the same
+            return await _dataContext.Employees.ToListAsync();
         }
 
-        public List<Employee> GetEmployees()
+        public async Task<Employee> GetEmployeeByIdAsync(int employeeId)
         {
-            return _employees;
+            return await _dataContext.Employees.SingleOrDefaultAsync(x => x.Id == employeeId); //Throws error if more than one id is the same
         }
 
-        public bool UpdateEmployee(Employee employeeToUpdate)
+        public async Task<bool> CreateEmployeeAsync(Employee employee)
         {
-            var exists = GetEmployeeById(employeeToUpdate.Id) != null;
-
-            if (!exists)
-            {
-                return false;
-            }
-
-            var index = _employees.FindIndex(x => x.Id == employeeToUpdate.Id);
-            _employees[index] = employeeToUpdate;
-            return true;
+            await _dataContext.Employees.AddAsync(employee);
+            var created = await _dataContext.SaveChangesAsync();
+            return created > 0;
         }
 
-        public bool DeleteEmployee(int employeeId)
+        public async Task<bool> UpdateEmployeeAsync(Employee employeeToUpdate)
         {
-            var employee = GetEmployeeById(employeeId);
+            _dataContext.Employees.Update(employeeToUpdate);
+            var updated = await _dataContext.SaveChangesAsync();
+            return updated > 0;
+        }
 
-            if (employee is null)
-            {
-                return false;
-            }
-
-            _employees.Remove(employee);
-            return true;
+        public async Task<bool> DeleteEmployeeAsync(int employeeId)
+        {
+            var employee = await GetEmployeeByIdAsync(employeeId);
+            _dataContext.Employees.Remove(employee);
+            var deleted = await _dataContext.SaveChangesAsync();
+            return deleted > 0;
         }
     }
 }

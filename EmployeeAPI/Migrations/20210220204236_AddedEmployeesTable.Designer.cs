@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210220142523_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20210220204236_AddedEmployeesTable")]
+    partial class AddedEmployeesTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -18,9 +18,9 @@ namespace EmployeeAPI.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.3");
 
-            modelBuilder.Entity("EmployeeAPI.Entities.Employee", b =>
+            modelBuilder.Entity("EmployeeAPI.Domain.Employee", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -30,7 +30,7 @@ namespace EmployeeAPI.Migrations
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<long?>("BossId")
+                    b.Property<int?>("BossId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("EmploymentDate")
@@ -55,9 +55,9 @@ namespace EmployeeAPI.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("EmployeeAPI.Entities.Employee", b =>
+            modelBuilder.Entity("EmployeeAPI.Domain.Employee", b =>
                 {
-                    b.HasOne("EmployeeAPI.Entities.Employee", "Boss")
+                    b.HasOne("EmployeeAPI.Domain.Employee", "Boss")
                         .WithMany()
                         .HasForeignKey("BossId");
 

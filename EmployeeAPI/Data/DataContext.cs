@@ -11,7 +11,12 @@ namespace EmployeeAPI.Data
     {
         public DbSet<Employee> Employees { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite("Data Source=employee.db"); //TODO: Hide connection string
+        //protected override void OnConfiguring(DbContextOptionsBuilder options)
+        //    => options.UseSqlite("Data Source=employee.db"); //TODO: Hide connection string
+
+        public DataContext(DbContextOptions<DataContext> options) : base(options)
+        {
+
+        }
     }
 }

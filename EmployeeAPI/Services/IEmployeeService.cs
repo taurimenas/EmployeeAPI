@@ -8,11 +8,10 @@ namespace EmployeeAPI.Services
 {
     public interface IEmployeeService
     {
-        List<Employee> GetEmployees();
-
-        Employee GetEmployeeById(int employeeId);
-
-        bool UpdateEmployee(Employee employeeToUpdate);
-        bool DeleteEmployee(int employeeId);
+        Task<List<Employee>> GetEmployeesAsync();
+        Task<Employee> GetEmployeeByIdAsync(int employeeId);
+        Task<bool> CreateEmployeeAsync(Employee employee);
+        Task<bool> UpdateEmployeeAsync(Employee employeeToUpdate);
+        Task<bool> DeleteEmployeeAsync(int employeeId);
     }
 }
