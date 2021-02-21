@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 using EmployeeAPI.Contracts.V1;
 using EmployeeAPI.Contracts.V1.Requests;
@@ -10,7 +9,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace EmployeeAPI.Controllers.V1
 {
-    public class EmployeesController : Controller
+    [Route("api/v1/employees")]
+    [ApiController]
+    public class EmployeesController : ControllerBase
     {
         private readonly IEmployeeService _employeeService;
         private readonly ILogger<EmployeesController> _logger;
@@ -21,29 +22,31 @@ namespace EmployeeAPI.Controllers.V1
             _logger = logger;
         }
 
-        [HttpGet(ApiRoutes.Employees.GetAll)]
-        public async Task<IActionResult> GetAll()
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] EmployeeQueryModel employeeQueryModel)
         {
             _logger.LogInformation("Getting employees");
-            return Ok(await _employeeService.GetEmployeesAsync());
+            return Ok(await _employeeService.GetEmployeesAsync(employeeQueryModel));
         }
 
-        [HttpGet(ApiRoutes.Employees.GetAllByBossId)]
-        public async Task<IActionResult> GetAllByBossId([FromRoute] int bossId)
+        [HttpGet("{employeeId}")]
+        public async Task<IActionResult> Get(int employeeId)
         {
-            _logger.LogInformation("Getting employees");
-            return Ok(await _employeeService.GetEmployeesByBossIdAsync(bossId));
+            _logger.LogInformation("Getting employee {Id}", employeeId);
+
+            var employee = await _employeeService.GetEmployeeByIdAsync(employeeId);
+
+            if (employee is null)
+            {
+                _logger.LogWarning("Get employee ({Id}) NOT FOUND", employeeId);
+                return NotFound();
+            }
+
+            return Ok(employee);
         }
 
-        [HttpGet(ApiRoutes.Employees.GetAllByNameAndBirthInterval)]
-        public async Task<IActionResult> GetAllByNameAndBirthInterval([FromRoute] string firstName, [FromRoute] DateTime intervalStart, [FromRoute] DateTime intervalEnd)
-        {
-            _logger.LogInformation("Getting employees");
-            return Ok(await _employeeService.GetEmployeesByNameAndBirthIntervalAsync(firstName, intervalStart, intervalEnd));
-        }
-
-        [HttpGet(ApiRoutes.Employees.GetCountAndAverageSalary)]
-        public async Task<IActionResult> GetCountAndAverageSalary([FromRoute] string role)
+        [HttpGet("role")]
+        public async Task<IActionResult> GetCountAndAverageSalary([FromQuery] string role)
         {
             _logger.LogInformation("Getting count and average salary");
             var result = await _employeeService.GetCountAndAverageSalaryAsync(role);
@@ -51,8 +54,8 @@ namespace EmployeeAPI.Controllers.V1
             return Ok(averageSalary);
         }
 
-        [HttpPut(ApiRoutes.Employees.Update)]
-        public async Task<IActionResult> Update([FromRoute] int employeeId, [FromBody] UpdateEmployeeRequest request)
+        [HttpPut("{employeeId}")]
+        public async Task<IActionResult> Update(int employeeId, UpdateEmployeeRequest request)
         {
             _logger.LogInformation("Getting employees");
             var employees = await _employeeService.GetEmployeesAsync();
@@ -70,8 +73,8 @@ namespace EmployeeAPI.Controllers.V1
             return NotFound();
         }
 
-        [HttpPatch(ApiRoutes.Employees.UpdateSalary)]
-        public async Task<IActionResult> UpdateSalary([FromRoute] int employeeId, int salary)
+        [HttpPatch("{employeeId}")]
+        public async Task<IActionResult> UpdateSalary(int employeeId, int salary)
         {
             _logger.LogInformation("Getting employee {Id}", employeeId);
             var employeeToUpdate = await _employeeService.GetEmployeeByIdAsync(employeeId);
@@ -85,8 +88,8 @@ namespace EmployeeAPI.Controllers.V1
             return NotFound();
         }
 
-        [HttpDelete(ApiRoutes.Employees.Delete)]
-        public async Task<IActionResult> Delete([FromRoute] int employeeId)
+        [HttpDelete("{employeeId}")]
+        public async Task<IActionResult> Delete(int employeeId)
         {
             _logger.LogInformation("Getting employee {Id}", employeeId);
             var deleted = await _employeeService.DeleteEmployeeAsync(employeeId);
@@ -101,24 +104,8 @@ namespace EmployeeAPI.Controllers.V1
             return NotFound();
         }
 
-        [HttpGet(ApiRoutes.Employees.Get)]
-        public async Task<IActionResult> Get([FromRoute] int employeeId)
-        {
-            _logger.LogInformation("Getting employee {Id}", employeeId);
-
-            var employee = await _employeeService.GetEmployeeByIdAsync(employeeId);
-
-            if (employee is null)
-            {
-                _logger.LogWarning("Get employee ({Id}) NOT FOUND", employeeId);
-                return NotFound();
-            }
-                 
-            return Ok(employee);
-        }
-
-        [HttpPost(ApiRoutes.Employees.Create)]
-        public async Task<IActionResult> Create([FromBody] CreateEmployeeRequest employeeRequest)
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateEmployeeRequest employeeRequest)
         {
             _logger.LogInformation("Getting employees");
             var employees = await _employeeService.GetEmployeesAsync();
@@ -139,12 +126,9 @@ namespace EmployeeAPI.Controllers.V1
                     return BadRequest(new { error = "Unable to create employee" });
                 }
 
-                var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-                var locationUri = baseUrl + "/" + ApiRoutes.Employees.Get.Replace("{employeeId}", employee.Id.ToString());
-
                 var response = EmployeeMappings.ToEmployeeResponse(employee);
 
-                return Created(locationUri, response);
+                return CreatedAtAction(nameof(GetAll), new { id = employee.Id }, response);
             }
             return BadRequest(new { error = "BossId not found" });
         }

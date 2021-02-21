@@ -1,11 +1,10 @@
 ﻿using EmployeeAPI.Data;
 using EmployeeAPI.Domain;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-
+using EmployeeAPI.Contracts.V1;
 
 namespace EmployeeAPI.Services
 {
@@ -18,21 +17,31 @@ namespace EmployeeAPI.Services
             _dataContext = dataContext;
         }
 
-        public async Task<List<Employee>> GetEmployeesAsync()
+        public async Task<List<Employee>> GetEmployeesAsync(EmployeeQueryModel employeeQueryModel = null)
         {
-            return await _dataContext.Employees.ToListAsync();
-        }
+            IQueryable<Employee> employees = _dataContext.Employees
+                .Include(x => x.Boss);
 
-        public async Task<List<Employee>> GetEmployeesByBossIdAsync(int bossId)
-        {
-            var employees = await GetEmployeesAsync();
-            return employees.Where(x => x.Boss != null && x.Boss.Id == bossId).ToList();
-        }
-
-        public async Task<List<Employee>> GetEmployeesByNameAndBirthIntervalAsync(string firstName, DateTime intervalStart, DateTime intervalEnd)
-        {
-            var employees = await GetEmployeesAsync();
-            return employees.Where(x => x.FirstName == firstName && x.BirthDate >= intervalStart && x.BirthDate <= intervalEnd).ToList();
+            if (!(employeeQueryModel is null))
+            {
+                if (employeeQueryModel.BossId.HasValue)
+                {
+                    employees = employees.Where(x => x.Boss.Id == employeeQueryModel.BossId.Value);
+                }
+                if (!string.IsNullOrEmpty(employeeQueryModel.FirstName))
+                {
+                    employees = employees.Where(x => x.FirstName.ToLower() == employeeQueryModel.FirstName.ToLower());
+                }
+                if (employeeQueryModel.DateFrom.HasValue)
+                {
+                    employees = employees.Where(x => x.BirthDate >= employeeQueryModel.DateFrom.Value);
+                }
+                if (employeeQueryModel.DateTo.HasValue)
+                {
+                    employees = employees.Where(x => x.BirthDate <= employeeQueryModel.DateTo.Value);
+                }
+            }
+            return await employees.ToListAsync();
         }
 
         public async Task<Employee> GetEmployeeByIdAsync(int employeeId)
