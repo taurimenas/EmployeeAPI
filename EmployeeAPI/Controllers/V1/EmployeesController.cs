@@ -13,9 +13,9 @@ namespace EmployeeAPI.Controllers.V1
     public class EmployeesController : Controller
     {
         private readonly IEmployeeService _employeeService;
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<EmployeesController> _logger;
 
-        public EmployeesController(IEmployeeService employeeService, ILogger<WeatherForecastController> logger)
+        public EmployeesController(IEmployeeService employeeService, ILogger<EmployeesController> logger)
         {
             _employeeService = employeeService;
             _logger = logger;
