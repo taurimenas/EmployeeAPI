@@ -1,18 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using EmployeeAPI.Domain;
 using EmployeeAPI.Contracts.V1;
 using EmployeeAPI.Contracts.V1.Requests;
-using EmployeeAPI.Contracts.V1.Responses;
 using EmployeeAPI.Services;
 using EmployeeAPI.Mappings.V1;
 using Microsoft.Extensions.Logging;
-using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Http;
-using System.Text;
 
 namespace EmployeeAPI.Controllers.V1
 {
@@ -45,14 +39,14 @@ namespace EmployeeAPI.Controllers.V1
         public async Task<IActionResult> GetAllByNameAndBirthInterval([FromRoute] string firstName, [FromRoute] DateTime intervalStart, [FromRoute] DateTime intervalEnd)
         {
             _logger.LogInformation("Getting employees");
-            return Ok(await _employeeService.GetEmployeesByNameAndBirthIntervalIdAsync(firstName, intervalStart, intervalEnd));
+            return Ok(await _employeeService.GetEmployeesByNameAndBirthIntervalAsync(firstName, intervalStart, intervalEnd));
         }
 
         [HttpGet(ApiRoutes.Employees.GetCountAndAverageSalary)]
         public async Task<IActionResult> GetCountAndAverageSalary([FromRoute] string role)
         {
             _logger.LogInformation("Getting count and average salary");
-            var result = await _employeeService.GetCountAndAverageSalary(role);
+            var result = await _employeeService.GetCountAndAverageSalaryAsync(role);
             var averageSalary = new AverageSalaryRequest { Count = result.count, AverageSalary = result.averageSalary };
             return Ok(averageSalary);
         }

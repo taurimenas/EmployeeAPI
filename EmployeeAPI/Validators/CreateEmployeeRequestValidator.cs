@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using EmployeeAPI.Contracts.V1.Requests;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 
 namespace EmployeeAPI.Validators
 {

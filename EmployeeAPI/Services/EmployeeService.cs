@@ -29,7 +29,7 @@ namespace EmployeeAPI.Services
             return employees.Where(x => x.Boss != null && x.Boss.Id == bossId).ToList();
         }
 
-        public async Task<List<Employee>> GetEmployeesByNameAndBirthIntervalIdAsync(string firstName, DateTime intervalStart, DateTime intervalEnd)
+        public async Task<List<Employee>> GetEmployeesByNameAndBirthIntervalAsync(string firstName, DateTime intervalStart, DateTime intervalEnd)
         {
             var employees = await GetEmployeesAsync();
             return employees.Where(x => x.FirstName == firstName && x.BirthDate >= intervalStart && x.BirthDate <= intervalEnd).ToList();
@@ -40,7 +40,7 @@ namespace EmployeeAPI.Services
             return await _dataContext.Employees.SingleOrDefaultAsync(x => x.Id == employeeId); //Throws error if more than one id is the same
         }
 
-        public async Task<(int count, double averageSalary)> GetCountAndAverageSalary(string role)
+        public async Task<(int count, double averageSalary)> GetCountAndAverageSalaryAsync(string role)
         {
             var employees = await GetEmployeesAsync();
             var employessFilter = employees.Where(x => x.Role == role);
