@@ -1,12 +1,11 @@
-﻿using EmployeeAPI.Domain;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EmployeeAPI.Contracts.V1.Responses
+namespace EmployeeAPI.Contracts.V1.Requests
 {
-    public class EmployeeResponse 
+    public class RequestBase
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -15,6 +14,7 @@ namespace EmployeeAPI.Contracts.V1.Responses
         public string Address { get; set; }
         public double Salary { get; set; }
         public string Role { get; set; }
-        public Employee Boss { get; set; }
+
+        public int BossId { get; set; }
     }
 }

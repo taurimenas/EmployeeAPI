@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace EmployeeAPI.Contracts.V1.Requests
 {
-    public class UpdateEmployeeRequest : RequestBase
+    public class AverageSalaryRequest
     {
-
+        public int Count { get; set; }
+        public double AverageSalary { get; set; }
     }
 }
