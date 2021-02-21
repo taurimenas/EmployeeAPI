@@ -17,6 +17,6 @@ namespace EmployeeAPI.Domain
         public Employee Boss { get; set; }
         public string Address { get; set; }
         public double Salary { get; set; }
-        public string Role { get; set; }
+        public string Role { get; set; } // Should be enum
     }
 }
