@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace EmployeeAPI.Validators
 {
-    public class UpdateEmployeeRequestValidator : AbstractValidator<UpdateEmployeeRequest>
+    public class UpdateEmployeeRequestValidator : AbstractValidator<EmployeeRequest>
     {
         public UpdateEmployeeRequestValidator()
         {

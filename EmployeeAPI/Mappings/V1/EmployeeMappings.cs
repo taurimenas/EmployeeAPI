@@ -8,7 +8,7 @@ namespace EmployeeAPI.Mappings.V1
 {
     public class EmployeeMappings
     {
-        public static Employee ToEmployee(CreateEmployeeRequest employeeRequest, List<Employee> employees)
+        public static Employee ToEmployee(EmployeeRequest employeeRequest, List<Employee> employees)
         {
             return new Employee
             {
@@ -23,7 +23,7 @@ namespace EmployeeAPI.Mappings.V1
             };
         }
 
-        public static Employee ToEmployee(Employee employee, UpdateEmployeeRequest employeeRequest, List<Employee> employees)
+        public static Employee ToEmployee(Employee employee, EmployeeRequest employeeRequest, List<Employee> employees)
         {
             employee.FirstName = employeeRequest.FirstName;
             employee.LastName = employeeRequest.LastName;
@@ -51,9 +51,9 @@ namespace EmployeeAPI.Mappings.V1
             };
         }
 
-        public static CreateEmployeeRequest ToCreateEmployeeRequest(Employee employee)
+        public static EmployeeRequest ToCreateEmployeeRequest(Employee employee)
         {
-            return new CreateEmployeeRequest
+            return new EmployeeRequest
             {
                 FirstName = employee.FirstName,
                 LastName = employee.LastName,
@@ -66,9 +66,9 @@ namespace EmployeeAPI.Mappings.V1
             };
         }
 
-        public static UpdateEmployeeRequest ToUpdateEmployeeRequest(Employee employee)
+        public static EmployeeRequest ToUpdateEmployeeRequest(Employee employee)
         {
-            return new UpdateEmployeeRequest
+            return new EmployeeRequest
             {
                 FirstName = employee.FirstName,
                 LastName = employee.LastName,

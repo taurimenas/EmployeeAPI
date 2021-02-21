@@ -55,7 +55,7 @@ namespace EmployeeAPI.Controllers.V1
         }
 
         [HttpPut("{employeeId}")]
-        public async Task<IActionResult> Update(int employeeId, UpdateEmployeeRequest request)
+        public async Task<IActionResult> Update(int employeeId, EmployeeRequest request)
         {
             _logger.LogInformation("Getting employees");
             var employees = await _employeeService.GetEmployeesAsync();
@@ -105,7 +105,7 @@ namespace EmployeeAPI.Controllers.V1
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateEmployeeRequest employeeRequest)
+        public async Task<IActionResult> Create(EmployeeRequest employeeRequest)
         {
             _logger.LogInformation("Getting employees");
             var employees = await _employeeService.GetEmployeesAsync();

@@ -2,7 +2,7 @@
 
 namespace EmployeeAPI.Contracts.V1.Requests
 {
-    public class RequestBase
+    public class EmployeeRequest
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
