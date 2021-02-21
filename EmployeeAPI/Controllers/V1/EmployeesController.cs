@@ -8,12 +8,13 @@ using EmployeeAPI.Contracts.V1;
 using EmployeeAPI.Contracts.V1.Requests;
 using EmployeeAPI.Contracts.V1.Responses;
 using EmployeeAPI.Services;
+using EmployeeAPI.Mappings.V1;
 
 namespace EmployeeAPI.Controllers.V1
 {
     public class EmployeesController : Controller
     {
-        private IEmployeeService _employeeService;
+        private readonly IEmployeeService _employeeService;
         public EmployeesController(IEmployeeService employeeService)
         {
             _employeeService = employeeService;
@@ -28,11 +29,9 @@ namespace EmployeeAPI.Controllers.V1
         [HttpPut(ApiRoutes.Employees.Update)]
         public async Task<IActionResult> Update([FromRoute] int employeeId, [FromBody] UpdateEmployeeRequest request)
         {
-            var employee = new Employee
-            {
-                Id = employeeId,
-                FirstName = request.FirstName
-            };
+            var employees = await _employeeService.GetEmployeesAsync();
+            var employeeToUpdate = await _employeeService.GetEmployeeByIdAsync(employeeId);
+            var employee = EmployeeMappings.ToEmployee(employeeToUpdate, request, employees);
 
             var updated = await _employeeService.UpdateEmployeeAsync(employee);
 
@@ -72,14 +71,25 @@ namespace EmployeeAPI.Controllers.V1
         [HttpPost(ApiRoutes.Employees.Create)]
         public async Task<IActionResult> Create([FromBody] CreateEmployeeRequest employeeRequest)
         {
-            var employee = new Employee { FirstName = employeeRequest.FirstName };
+            var employees = await _employeeService.GetEmployeesAsync();
+            if (employeeRequest.Role == "CEO" && employees.FindAll(x => x.Role == "CEO").Count > 0)
+            {
+                return BadRequest(new { error = "There can be only 1 employee with CEO role." });
+            }
 
-            await _employeeService.CreateEmployeeAsync(employee);
+            var employee = EmployeeMappings.ToEmployee(employeeRequest, employees);
+
+            var created = await _employeeService.CreateEmployeeAsync(employee);
+
+            if (!created)
+            {
+                return BadRequest(new { error = "Unable to create employee" });
+            }
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Employees.Get.Replace("{employeeId}", employee.Id.ToString());
 
-            var response = new EmployeeResponse { FirstName = employee.FirstName };
+            var response = EmployeeMappings.ToEmployeeResponse(employee); 
 
             return Created(locationUri, response);
         }
